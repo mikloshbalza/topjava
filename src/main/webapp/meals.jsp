@@ -1,10 +1,4 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: tkach
-  Date: 21.12.2023
-  Time: 17:17
-  To change this template use File | Settings | File Templates.
---%>
+<%@ page import="ru.javawebinar.topjava.util.DateTimeUtil" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -40,9 +34,9 @@
             <jsp:useBean id="meal"
                          type="ru.javawebinar.topjava.model.MealTo"/>
             <tr class="${meal.excess ? 'excess' : 'normal'}">
-                <td><%=dateTimeUtil.toString(meal.getDateTime())%></td>
-                <td><%=meal.getDescription()%></td>
-                <td><%=meal.getCalories()%></td>
+                <td><%=DateTimeUtil.toString(meal.getDateTime())%></td>
+                <td>${meal.description}</td>
+                <td>${meal.calories}</td>
                 <td><a href="meals?action=update&id=${meal.id}">Update</a> </td>
                 <td><a href="meals?action=delete&id=${meal.id}">Delete</a></td>
             </tr>

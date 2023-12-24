@@ -2,8 +2,8 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.storage.MapConcurrentStorage;
-import ru.javawebinar.topjava.storage.Storage;
+import ru.javawebinar.topjava.storage.MealConcurrentStorage;
+import ru.javawebinar.topjava.storage.MealStorage;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletConfig;
@@ -21,12 +21,12 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
-    private Storage storage;
+    private MealStorage mealStorage;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        storage = new MapConcurrentStorage();
+        mealStorage = new MealConcurrentStorage();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -35,20 +35,23 @@ public class MealServlet extends HttpServlet {
         switch (action == null ? "getall" : action) {
             case "delete":
                 int id = getId(request);
-                storage.delete(id);
+                log.info("Delete {}", id);
+                mealStorage.delete(id);
                 response.sendRedirect("meals");
                 break;
             case "create":
             case "update":
-                final Meal meal = "create".equals(action) ? new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 0) :
-                        storage.get(getId(request));
+                final Meal meal = "create".equals(action) ?
+                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 0) :
+                        mealStorage.get(getId(request));
                 request.setAttribute("meal", meal);
-                request.getRequestDispatcher("/edit.jsp").forward(request, response);
+                request.getRequestDispatcher("/meal_edit.jsp").forward(request, response);
                 break;
             case "getall":
             default:
+                log.info("Get All");
                 request.setAttribute("meals",
-                        MealsUtil.getTO(storage.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                        MealsUtil.getTo(mealStorage.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
@@ -62,7 +65,9 @@ public class MealServlet extends HttpServlet {
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
                 LocalDateTime.parse(request.getParameter("datetime")),
                 request.getParameter("description"), Integer.parseInt(request.getParameter("calories")));
-        storage.save(meal);
+
+        log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
+        mealStorage.save(meal);
         response.sendRedirect("meals");
     }
 

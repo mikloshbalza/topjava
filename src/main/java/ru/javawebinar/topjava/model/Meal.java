@@ -7,15 +7,11 @@ import java.time.LocalTime;
 public class Meal {
     private Integer id;
     private final LocalDateTime dateTime;
-
     private final String description;
-
     private final int calories;
+
     public Meal(LocalDateTime dateTime, String description, int calories) {
-        this.id = null;
-        this.dateTime = dateTime;
-        this.description = description;
-        this.calories = calories;
+        this(null, dateTime, description, calories);
     }
 
     public Meal(Integer id, LocalDateTime dateTime, String description, int calories) {
@@ -53,9 +49,10 @@ public class Meal {
         this.id = id;
     }
 
-    public boolean isNew(){
+    public boolean isNew() {
         return id == null;
     }
+
     @Override
     public String toString() {
         return "Meal{" +
