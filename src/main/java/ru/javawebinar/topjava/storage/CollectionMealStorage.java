@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MealConcurrentStorage implements MealStorage {
+public class CollectionMealStorage implements MealStorage {
     private final Map<Integer, Meal> meals = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
 

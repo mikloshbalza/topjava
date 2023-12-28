@@ -2,7 +2,7 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.storage.MealConcurrentStorage;
+import ru.javawebinar.topjava.storage.CollectionMealStorage;
 import ru.javawebinar.topjava.storage.MealStorage;
 import ru.javawebinar.topjava.util.MealsUtil;
 
@@ -26,7 +26,7 @@ public class MealServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        mealStorage = new MealConcurrentStorage();
+        mealStorage = new CollectionMealStorage();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -45,7 +45,7 @@ public class MealServlet extends HttpServlet {
                         new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 0) :
                         mealStorage.get(getId(request));
                 request.setAttribute("meal", meal);
-                request.getRequestDispatcher("/meal_edit.jsp").forward(request, response);
+                request.getRequestDispatcher("/mealEdit.jsp").forward(request, response);
                 break;
             case "getall":
             default:
