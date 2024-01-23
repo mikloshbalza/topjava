@@ -56,7 +56,6 @@
             <dd><input type="time" name="endTime" value="${param.endTime}"></dd>
         </dl>
         <button type="submit">Filter</button>
-        <button>Cancel</button>
     </form>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
