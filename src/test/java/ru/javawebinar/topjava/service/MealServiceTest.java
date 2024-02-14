@@ -55,8 +55,8 @@ public class MealServiceTest {
 
     @Test
     public void delete() {
-        service.delete(MEAL_ID + 1, USER_ID);
-        assertThrows(NotFoundException.class, () -> service.get(MEAL_ID + 1, USER_ID));
+        service.delete(FIRST_MEAL_ID, USER_ID);
+        assertThrows(NotFoundException.class, () -> service.get(FIRST_MEAL_ID, USER_ID));
     }
 
     @Test
@@ -65,8 +65,13 @@ public class MealServiceTest {
     }
 
     @Test
+    public void deleteNotOwn() {
+        assertThrows(NotFoundException.class, () -> service.delete(FIRST_MEAL_ID, ADMIN_ID));
+    }
+
+    @Test
     public void get() {
-        Meal meal = service.get(MEAL_ID + 1, USER_ID);
+        Meal meal = service.get(FIRST_MEAL_ID, USER_ID);
         assertMatch(meal, meal1);
     }
 
@@ -77,14 +82,14 @@ public class MealServiceTest {
 
     @Test
     public void getNotOwn() {
-        assertThrows(NotFoundException.class, () -> service.get(MEAL_ID + 1, ADMIN_ID));
+        assertThrows(NotFoundException.class, () -> service.get(FIRST_MEAL_ID, ADMIN_ID));
     }
 
     @Test
     public void update() {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
-        assertMatch(service.get(MEAL_ID + 1, USER_ID), getUpdated());
+        assertMatch(service.get(FIRST_MEAL_ID, USER_ID), getUpdated());
     }
 
     @Test
@@ -99,7 +104,7 @@ public class MealServiceTest {
     }
 
     @Test
-    public void gGetBetweenInclusive() {
+    public void getBetweenInclusive() {
         assertMatch(service.getBetweenInclusive(LocalDate.of(2020, Month.JANUARY, 30),
                         LocalDate.of(2020, Month.JANUARY, 30), USER_ID),
                 meal3, meal2, meal1);
