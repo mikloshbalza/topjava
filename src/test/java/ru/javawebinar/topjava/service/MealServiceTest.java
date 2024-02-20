@@ -55,8 +55,8 @@ public class MealServiceTest {
 
     @Test
     public void delete() {
-        service.delete(FIRST_MEAL_ID, USER_ID);
-        assertThrows(NotFoundException.class, () -> service.get(FIRST_MEAL_ID, USER_ID));
+        service.delete(USER_MEAL_ID, USER_ID);
+        assertThrows(NotFoundException.class, () -> service.get(USER_MEAL_ID, USER_ID));
     }
 
     @Test
@@ -66,12 +66,12 @@ public class MealServiceTest {
 
     @Test
     public void deleteNotOwn() {
-        assertThrows(NotFoundException.class, () -> service.delete(FIRST_MEAL_ID, ADMIN_ID));
+        assertThrows(NotFoundException.class, () -> service.delete(USER_MEAL_ID, ADMIN_ID));
     }
 
     @Test
     public void get() {
-        Meal meal = service.get(FIRST_MEAL_ID, USER_ID);
+        Meal meal = service.get(USER_MEAL_ID, USER_ID);
         assertMatch(meal, meal1);
     }
 
@@ -82,14 +82,14 @@ public class MealServiceTest {
 
     @Test
     public void getNotOwn() {
-        assertThrows(NotFoundException.class, () -> service.get(FIRST_MEAL_ID, ADMIN_ID));
+        assertThrows(NotFoundException.class, () -> service.get(USER_MEAL_ID, ADMIN_ID));
     }
 
     @Test
     public void update() {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
-        assertMatch(service.get(FIRST_MEAL_ID, USER_ID), getUpdated());
+        assertMatch(service.get(USER_MEAL_ID, USER_ID), getUpdated());
     }
 
     @Test
