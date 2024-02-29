@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.service;
 
 import org.junit.AfterClass;
-import org.junit.AssumptionViolatedException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Stopwatch;
@@ -20,8 +19,6 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThrows;
@@ -36,33 +33,23 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
-
     private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
 
-    private static final List<String> results = new ArrayList<>();
+    private static final StringBuffer results = new StringBuffer();
 
-    private static void logInfo(Description description, String status, long nanos) {
-        String testName = description.getMethodName();
-        String result = String.format("Test %-30s %-10s in %5d ms", testName, status, TimeUnit.NANOSECONDS.toMillis(nanos));
-        results.add(result);
-        log.info(result);
-    }
 
     @Rule
     public Stopwatch stopwatch = new Stopwatch() {
-        @Override
-        protected void succeeded(long nanos, Description description) {
-            logInfo(description, "succeeded", nanos);
+        private void logInfo(Description description, long nanos) {
+            String testName = description.getMethodName();
+            String result = String.format("Test %-30s %5d ms", testName, TimeUnit.NANOSECONDS.toMillis(nanos));
+            results.append("\n").append(result);
+            log.info(result);
         }
 
         @Override
-        protected void failed(long nanos, Throwable e, Description description) {
-            logInfo(description, "failed", nanos);
-        }
-
-        @Override
-        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
-            logInfo(description, "skipped", nanos);
+        protected void finished(long nanos, Description description) {
+            logInfo(description, nanos);
         }
     };
 
@@ -70,13 +57,13 @@ public class MealServiceTest {
     private MealService service;
 
     @AfterClass
-    public static void printResult(){
-        System.out.println("----------------------------------------------------------");
-        for (String s : results) {
-            System.out.println(s);
-        }
-        System.out.println("----------------------------------------------------------");
+    public static void printResult() {
+        System.out.println("--------------------------------------------"
+                + results +
+                "\n--------------------------------------------");
+
     }
+
     @Test
     public void delete() {
         service.delete(MEAL1_ID, USER_ID);
