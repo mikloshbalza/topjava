@@ -35,21 +35,17 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 public class MealServiceTest {
     private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
 
-    private static final StringBuffer results = new StringBuffer();
-
+    private static final StringBuilder results = new StringBuilder();
 
     @Rule
     public Stopwatch stopwatch = new Stopwatch() {
-        private void logInfo(Description description, long nanos) {
+
+        @Override
+        protected void finished(long nanos, Description description) {
             String testName = description.getMethodName();
             String result = String.format("Test %-30s %5d ms", testName, TimeUnit.NANOSECONDS.toMillis(nanos));
             results.append("\n").append(result);
             log.info(result);
-        }
-
-        @Override
-        protected void finished(long nanos, Description description) {
-            logInfo(description, nanos);
         }
     };
 
@@ -58,10 +54,9 @@ public class MealServiceTest {
 
     @AfterClass
     public static void printResult() {
-        System.out.println("--------------------------------------------"
+        log.info("\n--------------------------------------------"
                 + results +
                 "\n--------------------------------------------");
-
     }
 
     @Test
