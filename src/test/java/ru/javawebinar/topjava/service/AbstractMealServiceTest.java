@@ -16,12 +16,10 @@ import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 
-abstract public class AbstractMealServiceTest extends AbstractServiceTest {
-
+public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Autowired
     private MealService service;
-
 
     @Test
     public void delete() {
