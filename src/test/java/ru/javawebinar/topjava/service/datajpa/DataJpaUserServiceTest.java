@@ -4,13 +4,11 @@ import org.junit.Test;
 import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.UserTestData;
-import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.AbstractUserServiceTest;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.MEAL_MATCHER;
@@ -34,9 +32,7 @@ public class DataJpaUserServiceTest extends AbstractUserServiceTest {
     @Test
     public void getWithMealsNoMeals() {
         User guestUser = service.getWithMeals(GUEST_ID);
-        User userNoMeals = new User();
-        List<Meal> mealsEmpty = new ArrayList<>();
-        userNoMeals.setMeals(mealsEmpty);
-        MEAL_MATCHER.assertMatch(guestUser.getMeals(), userNoMeals.getMeals());
+        MEAL_MATCHER.assertMatch(guestUser.getMeals(), Collections.emptyList());
+        USER_MATCHER.assertMatch(guestUser, UserTestData.guest);
     }
 }
