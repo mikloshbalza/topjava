@@ -16,8 +16,6 @@ import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.TimingRules;
 
-import java.util.Arrays;
-
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
 
@@ -39,9 +37,8 @@ public abstract class AbstractServiceTest {
     @Rule
     public Stopwatch stopwatch = TimingRules.STOPWATCH;
 
-    public boolean isNotJdbc() {
-        return Arrays.stream(environment.getActiveProfiles()).noneMatch(
-                env -> (env.equalsIgnoreCase(Profiles.JDBC)));
+    protected boolean isNotJdbc() {
+        return !environment.matchesProfiles(Profiles.JDBC);
     }
 
     //  Check root cause in JUnit: https://github.com/junit-team/junit4/pull/778

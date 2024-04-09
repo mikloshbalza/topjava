@@ -39,7 +39,6 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         if (isNotJdbc()) {
             jpaUtil.clear2ndLevelHibernateCache();
         }
-
     }
 
     @Test
