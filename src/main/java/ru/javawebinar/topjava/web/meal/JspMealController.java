@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.web.meal;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -8,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.service.MealService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
@@ -23,9 +21,6 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 @Controller
 @RequestMapping(value = "/meals")
 public class JspMealController extends AbstractMealController {
-
-    @Autowired
-    private MealService service;
 
     @GetMapping
     public String get(Model model) {
@@ -62,7 +57,7 @@ public class JspMealController extends AbstractMealController {
     }
 
     @PostMapping
-    public String saveOrUpdate(HttpServletRequest request) {
+    public String createOrUpdate(HttpServletRequest request) {
         Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),

@@ -18,10 +18,10 @@ import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
 public abstract class AbstractMealController {
-    protected static final Logger log = LoggerFactory.getLogger(MealRestController.class);
+    protected static final Logger log = LoggerFactory.getLogger(new Exception().getStackTrace()[1].getClassName());
 
     @Autowired
-    protected MealService service;
+    private MealService service;
 
     public Meal get(int id) {
         int userId = SecurityUtil.authUserId();
