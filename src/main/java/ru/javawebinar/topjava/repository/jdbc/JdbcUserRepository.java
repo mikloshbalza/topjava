@@ -13,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
+import ru.javawebinar.topjava.util.ValidationUtil;
 
 import java.util.*;
 
@@ -41,20 +42,24 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     @Transactional
     public User save(User user) {
+        ValidationUtil.validate(user);
+
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
 
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
             insertRoles(user);
-        } else if (namedParameterJdbcTemplate.update("""
-                   UPDATE users SET name=:name, email=:email, password=:password,
-                   registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id
-                """, parameterSource) == 0) {
-            return null;
+        } else {
+            if (namedParameterJdbcTemplate.update("""
+                       UPDATE users SET name=:name, email=:email, password=:password,
+                       registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id
+                    """, parameterSource) == 0) {
+                return null;
+            }
+            deleteRoles(user);
+            insertRoles(user);
         }
-        deleteRoles(user);
-        insertRoles(user);
         return user;
     }
 
@@ -81,12 +86,12 @@ public class JdbcUserRepository implements UserRepository {
     public List<User> getAll() {
         List<User> users = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
 
-        Map<Integer, Set<Role>> map = new HashMap<>();
+        Map<Integer, Set<Role>> userRoles = new HashMap<>();
         jdbcTemplate.query("SELECT * FROM user_role", rs -> {
-            map.computeIfAbsent(rs.getInt("user_id"), userId -> EnumSet.noneOf(Role.class))
+            userRoles.computeIfAbsent(rs.getInt("user_id"), userId -> EnumSet.noneOf(Role.class))
                     .add(Role.valueOf(rs.getString("role")));
         });
-        users.forEach(u -> u.setRoles(map.get(u.getId())));
+        users.forEach(u -> u.setRoles(userRoles.get(u.getId())));
         return users;
     }
 
