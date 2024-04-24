@@ -60,7 +60,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newMeal)));
 
-        Meal created = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), Meal.class);
+        Meal created = MEAL_MATCHER.readFromJson(resultActions);
         int newId = created.id();
         newMeal.setId(newId);
         MEAL_MATCHER.assertMatch(created, newMeal);
@@ -80,9 +80,21 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getBetween() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "between?startDateTime=2020-01-30T12:00:00&endDateTime=2020-01-31T14:00:00"))
+        perform(MockMvcRequestBuilders.get(REST_URL + "between")
+                .param("startDate", "2020-01-30").param("startTime", "12:00")
+                .param("endDate", "2020-01-31").param("endTime", "14:00"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(MEAL_TO_MATCHER.contentJson(createTo(meal6, true), createTo(meal2, false)));
+    }
+
+    @Test
+    void getBetweenNull() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "between")
+                .param("startDate", "").param("startTime", "")
+                .param("endDate", "").param("endTime", ""))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(MEAL_TO_MATCHER.contentJson(getTos(meals, user.getCaloriesPerDay())));
     }
 }
