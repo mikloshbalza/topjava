@@ -51,7 +51,7 @@
     </bean>
 
     <bean id="customDateTimeFormatAnnotationFormatterFactory"
-          class="ru.javawebinar.topjava.util.formatter.CustomDateTimeFormatAnnotationFormatterFactory"/>
+          class="ru.javawebinar.topjava.web.formatter.CustomDateTimeFormatAnnotationFormatterFactory"/>
 
     <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
         <property name="formatters">
