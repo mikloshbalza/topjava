@@ -1,9 +1,20 @@
 let form;
 
-function makeEditable(datatableApi) {
-    ctx.datatableApi = datatableApi;
-    form = $('#detailsForm');
+function makeEditable(datatableOpts) {
+    ctx.datatableApi = $("#datatable").DataTable(
+        // https://api.jquery.com/jquery.extend/#jQuery-extend-deep-target-object1-objectN
+        $.extend(true, datatableOpts,
+            {
+                "ajax": {
+                    "url": ctx.ajaxUrl,
+                    "dataSrc": ""
+                },
+                "paging": false,
+                "info": true
+            }
+        ));
 
+    form = $('#detailsForm');
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
         failNoty(jqXHR);
     });
@@ -63,7 +74,7 @@ function save() {
     });
 }
 
-let failedNote;
+var failedNote;
 
 function closeNoty() {
     if (failedNote) {
@@ -82,6 +93,17 @@ function successNoty(key) {
     }).show();
 }
 
+function failNoty(jqXHR) {
+    closeNoty();
+    var errorInfo = jqXHR.responseJSON;
+    failedNote = new Noty({
+        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + i18n["common.errorStatus"] + ": " + jqXHR.status +
+            "<br>" + errorInfo.type + "<br>" + errorInfo.detail,
+        type: "error",
+        layout: "bottomRight"
+    }).show();
+}
+
 function renderEditBtn(data, type, row) {
     if (type === "display") {
         return "<a onclick='updateRow(" + row.id + ");'><span class='fa fa-pencil'></span></a>";
@@ -92,15 +114,4 @@ function renderDeleteBtn(data, type, row) {
     if (type === "display") {
         return "<a onclick='deleteRow(" + row.id + ");'><span class='fa fa-remove'></span></a>";
     }
-}
-
-function failNoty(jqXHR) {
-    closeNoty();
-    var errorInfo = jqXHR.responseJSON;
-    failedNote = new Noty({
-        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + i18n["common.errorStatus"] + ": " + jqXHR.status +
-            "<br>" + errorInfo.type + "<br>" + errorInfo.detail,
-        type: "error",
-        layout: "bottomRight"
-    }).show();
 }
