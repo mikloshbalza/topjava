@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.util;
+package ru.javawebinar.topjava.util.validation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
